@@ -1,0 +1,18 @@
+flowchart TD
+    A[User Audio Input] --> B[Frontend Client]
+    B -->|Audio Stream| C[FastAPI Backend]
+    
+    subgraph Backend Processing
+        C --> D[Whisper ASR Service]
+        D -->|Transcribed Text| E[Text Preprocessing]
+        E --> F[Gemini API Service]
+        F -->|Generated Response| G[Text-to-Speech Service]
+    end
+    
+    G -->|Audio Response| B
+    
+    subgraph Storage Layer
+        H[(Conversation History DB)]
+        E ---|Store Conversation| H
+        F ---|Store Response| H
+    end

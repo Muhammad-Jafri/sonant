@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  sonant:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: sonant_app
+    volumes:
+      - .:/workspace  # Mount the parent directory
+      - ./app:/workspace/app  # Mount app directory where it should be
+    working_dir: /workspace/app
+    environment:
+      - PYTHONPATH=/workspace
+    command: sh -c "chmod +x /workspace/app/run_server.sh && /workspace/app/run_server.sh"
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    restart: always
