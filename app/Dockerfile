@@ -8,17 +8,21 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------PYTHON PACKAGES---------------------
+# Install PyTorch CPU-only version first
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+# Install other packages ensuring CPU-only versions where applicable
 RUN pip install --no-cache-dir \
     numpy \
     soundfile \
-    optimum-intel \
+    "optimum-intel[openvino]" \
     transformers \
-    torch \
-    openvino
+    --extra-index-url https://download.intel.com/ipex/cpu-runtime-pip-wheels
 
-#----------------------------DEVELOPMENT PACKAGES--------------
+# Install Piper TTS
+RUN pip install --no-cache-dir piper-tts
+
+# Development packages
 RUN pip install --no-cache-dir \
     uvicorn \
     fastapi
-
-
