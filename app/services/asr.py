@@ -1,16 +1,19 @@
 import base64
 import io
+
 import numpy as np
 import soundfile as sf
 from optimum.intel.openvino import OVModelForSpeechSeq2Seq
 from transformers import AutoProcessor
+
 
 class ASRService:
     """
     Automatic Speech Recognition service using OpenVINO-optimized Whisper model.
     """
 
-    def __init__(self, model_id: str = "OpenVINO/whisper-medium-int8-ov", sampling_rate: int = 16000):
+    def __init__(self, model_path: str = "OpenVINO/whisper-medium-int8-ov",
+                 sampling_rate: int = 16000):  # TODO change model to distil whisper medium for faster inference
         """
         Initialize the ASR service.
 
@@ -18,13 +21,13 @@ class ASRService:
             model_id (str): HuggingFace model ID for the Whisper model
             sampling_rate (int): Target sampling rate for audio processing
         """
-        self.model_id = model_id
+        self.model_id = model_path
         self.sampling_rate = sampling_rate
 
         # Initialize tokenizer and model
         try:
-            self.processor = AutoProcessor.from_pretrained(model_id)
-            self.model = OVModelForSpeechSeq2Seq.from_pretrained(model_id)
+            self.processor = AutoProcessor.from_pretrained(model_path)
+            self.model = OVModelForSpeechSeq2Seq.from_pretrained(model_path)
         except Exception as e:
             raise RuntimeError(f"Failed to load model and tokenizer: {str(e)}")
 
@@ -54,7 +57,7 @@ class ASRService:
             ).input_features
 
             # Generate transcription
-            outputs = self.model.generate(input_features) #TODO fix this tomorrow
+            outputs = self.model.generate(input_features)  # TODO fix this tomorrow
 
             # Decode the outputs
             transcribed_text = self.processor.batch_decode(outputs)[0]

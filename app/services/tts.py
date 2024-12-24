@@ -12,7 +12,6 @@ class TTSService:
 
     @measure_time
     def generate_audio(self, text: str):
-
         clean_text = self.preprocess_text(text)
         temp_wav_file = wave.open("output.wav", "w")
         self.voice.synthesize(clean_text, temp_wav_file)
