@@ -26,3 +26,5 @@ RUN pip install --no-cache-dir piper-tts
 RUN pip install --no-cache-dir \
     uvicorn \
     fastapi
+
+RUN pip install openai==0.28
